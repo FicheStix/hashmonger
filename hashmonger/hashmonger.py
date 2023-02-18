@@ -9,7 +9,7 @@ import io
 from typing import Optional
 from rich import print
 
-__version__ = "0.1.1"
+__version__ = "0.2.0"
 
 def version_callback(value: Optional[bool]):
     if value:
@@ -38,9 +38,9 @@ def get_hashes(item_path: str) -> dict:
     md5 = hashlib.md5()
 
     hash_dict = {
-        "sha1": sha1,
-        "sha256": sha256,
-        "md5": md5
+        "SHA256": sha256,
+        "SHA1": sha1,
+        "MD5": md5
     }
 
     # if we're hashing a file open it and begin reading bytes into the hash objects
@@ -61,7 +61,7 @@ def get_hashes(item_path: str) -> dict:
     return hash_dict
 
 def main(item_path: str = typer.Option(..., "--path", "-p", help="File or folder path to be hashed", prompt="Path (file or folder)", show_default=False),
-         hash_type: str = typer.Option(None, "--hash", "-d", help="Single digest or a comma separated list of digests", show_default=False),
+         hash_type: str = typer.Option(None, "--hash", "-d", help="Specify a single hash type. Default: return all available hash types.", show_default=False),
          version: Optional[bool] = typer.Option(None, "--version", callback=version_callback, is_eager=True)
 ):
     """Compute file/folder hashes."""
