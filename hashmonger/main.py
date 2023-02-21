@@ -6,7 +6,9 @@ from typing import Optional
 
 import typer
 
-from hashmonger.hasher import Hasher
+import hashmonger.hasher as hasher
+
+from . import __app_name__, __version__
 
 app = typer.Typer()
 
@@ -27,7 +29,17 @@ def hash(path: Path = typer.Option(..., callback=validpath_callback)):
     """
     Return hash digest(s) for given item path.
     """
-    print(f"You entered {path}")
+    hashes = hasher.Hasher(path)
+    hash_list = hashes.get_hashes()
+    for hash in hash_list:
+         print(f"{hash}\t\t{hash_list[hash].hexdigest()}")
+
+@app.command()
+def version():
+    """
+    Displays current version of application.
+    """
+    print(f"{__app_name__} {__version__}")
 
 if __name__ == "__main__":
     app()
