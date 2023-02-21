@@ -6,30 +6,35 @@ import typer
 import hashlib
 import io
 
+from pathlib import Path
 from typing import Optional
-from rich import print
+from hashmonger import __app_name__, __version__
 
-__version__ = "0.2.1"
-
-def version_callback(value: Optional[bool]):
-    if value:
-        print(f"You are using Hashmonger version {__version__}")
-        raise typer.Exit()
-
-def get_item_type(item_path: str) -> Optional[str]:
+class Hasher:
     """
-    Checks if the supplied path is to a real folder or file. 
+    Hasher class returns an object that exposes various hash methods. When
+    called, these hash read chunks of the given file path and returns a
+    hash digest.
     """
-   
-    if os.path.exists(item_path):
-        if os.path.isfile(item_path):
-            return "file"
-        elif os.path.isdir(item_path):
-            return "dir"
+
+    def __init__(self, path: str):
+        self.file_path = path
+
+    def get_path_type(self) -> Optional[str]:
+        """
+        Validates a given file/folder path and returns whether
+        the path leads to a file or folder. 
+        """
+        path_is_file = Path.is_file(self.file_path)
+        path_is_dir = Path.is_dir(self.file_path)
+
+        if path_is_file:
+            return "File"
+        elif path_is_dir:
+            return "Folder"
         else:
             return None
-  
-    raise ValueError
+
 
 def get_hashes(item_path: str) -> dict:
     BUFFER = io.DEFAULT_BUFFER_SIZE
@@ -60,20 +65,6 @@ def get_hashes(item_path: str) -> dict:
 
     return hash_dict
 
-def main(item_path: str = typer.Option(
-            ..., "--path", "-p", help="File or folder path to be hashed", 
-            prompt="Path (file or folder)", show_default=False
-            ),
-         hash_type: str = typer.Option(
-            None, "--hash", "-d", 
-            help="Specify a single hash type. Default: return all available hash types.", 
-            show_default=False
-            ),
-         version: Optional[bool] = typer.Option(
-            None, "--version", 
-            callback=version_callback, is_eager=True
-            )
-):
     """Compute file/folder hashes."""
     try:
         item_type = get_item_type(item_path)
@@ -89,6 +80,3 @@ def main(item_path: str = typer.Option(
         print("Directory")
 
 
-# entrypoint logic
-if __name__ == "__main__":
-    typer.run(main)
