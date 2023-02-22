@@ -38,7 +38,8 @@ class Hasher:
     def _get_path_type(self, item_path: str) -> Optional[str]:
         """
         Validates a given file/folder path and returns whether
-        the path leads to a file or folder. 
+        the path leads to a file or folder. This function expects
+        to receive a path to an existing file/directory. 
         """
         path_is_file = Path(item_path).is_file()
         path_is_dir = Path(item_path).is_dir()
