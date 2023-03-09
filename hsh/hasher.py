@@ -14,7 +14,7 @@ class Hasher:
     hash digest.
     """
 
-    def __init__(self, path: str):
+    def __init__(self, path: Path):
         self.item_path = self._validate_path(path)
         self.item_type = self._get_path_type(self.item_path)
         self.buffer_size = io.DEFAULT_BUFFER_SIZE
@@ -29,13 +29,13 @@ class Hasher:
             "MD5": _md5_hash
         }
 
-    def _validate_path(self, item_path: str) -> str:
+    def _validate_path(self, item_path: Path) -> Path:
         if Path(item_path).exists():
             return item_path
         else:
             raise FileNotFoundError("The path provided does not exist.")
         
-    def _get_path_type(self, item_path: str) -> Optional[str]:
+    def _get_path_type(self, item_path: Path) -> Optional[str]:
         """
         Validates a given file/folder path and returns whether
         the path leads to a file or folder. This function expects
